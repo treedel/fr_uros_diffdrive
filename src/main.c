@@ -12,10 +12,9 @@ void vUrosBootTask(void* pvParameters)
     UrosWrapperCore_t* xUrosWrapper = vUrosInit("Diffbot", pxStatusLed);
 
     vSimpleSubcriberInit(pxStatusLed);
-    vStartSimplePublisher(xUrosWrapper, "wheel_odom", 50, pdTRUE);    // Odom
-    vStartSimplePublisher(xUrosWrapper, "joint_states", 50, pdFALSE);    // Joint states
-    vStartSimplePublisher(xUrosWrapper, "imu_raw", 10, pdFALSE);   // IMU
-    vStartSimplePublisher(xUrosWrapper, "lidar", 50, pdFALSE);   // Lidar (close)
+    vStartSimplePublisher(xUrosWrapper, "wheel_odom", 50, pdTRUE);      // Odom
+    vStartSimplePublisher(xUrosWrapper, "joint_states", 50, pdFALSE);   // Joint states
+    vStartSimplePublisher(xUrosWrapper, "imu_raw", 10, pdFALSE);        // IMU
 
     vSimpleSubscriberStart(xUrosWrapper);
     vUrosSetup(xUrosWrapper);

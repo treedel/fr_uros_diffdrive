@@ -130,7 +130,7 @@ void vUrosWrapperStart(UrosWrapperCore_t* pxUrosWrapper)
 #endif
 }
 
-UrosWrapperPublisher_t* vUrosWrapperAddPublisher(
+UrosWrapperPublisher_t* pxUrosWrapperAddPublisher(
     UrosWrapperCore_t* pxUrosWrapper,
     char* pcTopicName, 
     const rosidl_message_type_support_t* pxTypeSupport,
@@ -140,10 +140,17 @@ UrosWrapperPublisher_t* vUrosWrapperAddPublisher(
     configASSERT(pxUrosWrapper != NULL);
     configASSERT(pxUrosWrapper->n_publishers < MAX_PUBLISHERS);
 
+    (pxUrosWrapper->xPublishers[(pxUrosWrapper->n_publishers)]).pxPublisher = pvPortMalloc(sizeof(rcl_publisher_t));
+
+    configASSERT(pxUrosWrapperPublisher != NULL);
+    pxUrosWrapper->xPublishers[(pxUrosWrapper->n_publishers)].pcTopicName = pcTopicName;
+    pxUrosWrapper->xPublishers[(pxUrosWrapper->n_publishers)].pxStatusLed = pxUrosWrapper->pxStatusLed;
+    pxUrosWrapper->xPublishers[(pxUrosWrapper->n_publishers)].pxPublishSemaphore = &pxUrosWrapper->xPublishSemaphore;
+
     if (xReliable)
     {
         rclc_publisher_init_default(
-            &(pxUrosWrapper->xPublishers[pxUrosWrapper->n_publishers]),
+            (pxUrosWrapper->xPublishers[(pxUrosWrapper->n_publishers)]).pxPublisher,
             &(pxUrosWrapper->xNode),
             pxTypeSupport,
             pcTopicName
@@ -152,7 +159,7 @@ UrosWrapperPublisher_t* vUrosWrapperAddPublisher(
     else
     {
         rclc_publisher_init_best_effort(
-            &(pxUrosWrapper->xPublishers[pxUrosWrapper->n_publishers]),
+            (pxUrosWrapper->xPublishers[(pxUrosWrapper->n_publishers)]).pxPublisher,
             &(pxUrosWrapper->xNode),
             pxTypeSupport,
             pcTopicName
@@ -161,14 +168,7 @@ UrosWrapperPublisher_t* vUrosWrapperAddPublisher(
 
     (pxUrosWrapper->n_publishers)++;
 
-    UrosWrapperPublisher_t* pxUrosWrapperPublisher = pvPortMalloc(sizeof(UrosWrapperPublisher_t));
-    configASSERT(pxUrosWrapperPublisher != NULL);
-    pxUrosWrapperPublisher->pcTopicName = pcTopicName;
-    pxUrosWrapperPublisher->pxPublisher = &(pxUrosWrapper->xPublishers[(pxUrosWrapper->n_publishers) - 1]);
-    pxUrosWrapperPublisher->pxStatusLed = pxUrosWrapper->pxStatusLed;
-    pxUrosWrapperPublisher->pxPublishSemaphore = &pxUrosWrapper->xPublishSemaphore;
-
-    return pxUrosWrapperPublisher;
+    return &(pxUrosWrapper->xPublishers[(pxUrosWrapper->n_publishers)-1]);
 }
 
 rcl_ret_t pxUrosWrapperPublish(

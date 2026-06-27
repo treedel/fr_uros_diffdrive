@@ -48,7 +48,6 @@ typedef struct UrosWrapperSubscriber_t
 
 } UrosWrapperSubscriber_t;
 
-// TODO: change the publisher type from rclc to uroswrapper
 typedef struct UrosWrapperCore_t
 {
 
@@ -61,7 +60,7 @@ typedef struct UrosWrapperCore_t
 
     uint8_t n_publishers;
     uint8_t n_subscribers;
-    rcl_publisher_t xPublishers[MAX_PUBLISHERS];
+    UrosWrapperPublisher_t xPublishers[MAX_PUBLISHERS];
     UrosWrapperSubscriber_t xSubscribers[MAX_SUBSCRIBERS];
 
     SemaphoreHandle_t xPublishSemaphore;
@@ -76,8 +75,7 @@ void vUrosSetup(UrosWrapperCore_t* pxUrosWrapper);
 void vUrosRunTask(void* pvParameters);
 void vUrosWrapperStart(UrosWrapperCore_t* pxUrosWrapper);
 
-// TODO: Chnage v to px
-UrosWrapperPublisher_t* vUrosWrapperAddPublisher(
+UrosWrapperPublisher_t* pxUrosWrapperAddPublisher(
     UrosWrapperCore_t* pxUrosWrapper,
     char* pcTopicName, 
     const rosidl_message_type_support_t* pxTypeSupport,

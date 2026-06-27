@@ -24,7 +24,7 @@ void vPublisherTask(void* pvParameters)
 void vStartSimplePublisher(UrosWrapperCore_t* pxUrosWrapper, char* pcTopicName, unsigned long ulDelayPeriod, BaseType_t xReliable)
 {
 
-    UrosWrapperPublisher_t* pxUrosWrapperPublisher = vUrosWrapperAddPublisher(
+    UrosWrapperPublisher_t* pxUrosWrapperPublisher = pxUrosWrapperAddPublisher(
         pxUrosWrapper,
         pcTopicName,
         ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Int64),
