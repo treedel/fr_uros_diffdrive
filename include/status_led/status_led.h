@@ -5,6 +5,7 @@
 #include <task.h>
 #include <semphr.h>
 
+#include "pico/cyw43_arch.h"
 #include <hardware/gpio.h>
 
 

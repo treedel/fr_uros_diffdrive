@@ -23,7 +23,7 @@ if (EXISTS ${picoVscode})
     include(${picoVscode})
 endif()
 # ====================================================================================
-set(PICO_BOARD pico2 CACHE STRING "Board type")
+set(PICO_BOARD pico2_w CACHE STRING "Board type")
 
 # Pull in Raspberry Pi Pico SDK (must be before project)
 include(pico_sdk_import.cmake)
@@ -39,7 +39,8 @@ link_directories(${CMAKE_CURRENT_LIST_DIR}/lib/uros/libmicroros)
 # Add executable. Default name is the project name, version 0.1
 add_executable(fr_uros_diffdrive 
     ${CMAKE_CURRENT_LIST_DIR}/src/main.c
-    ${CMAKE_CURRENT_LIST_DIR}/src/microros/pico_uart_transport.c
+    #${CMAKE_CURRENT_LIST_DIR}/src/microros/pico_uart_transport.c
+    ${CMAKE_CURRENT_LIST_DIR}/src/microros/picow_udp_transports.c
     ${CMAKE_CURRENT_LIST_DIR}/src/status_led/status_led.c
     ${CMAKE_CURRENT_LIST_DIR}/src/uros_wrapper/uros_wrapper.c
     ${CMAKE_CURRENT_LIST_DIR}/src/simple_publisher/simple_publisher.c
@@ -56,12 +57,15 @@ add_compile_definitions(PICO_UART_ENABLE_CRLF_SUPPORT=0)
 add_compile_definitions(PICO_STDIO_ENABLE_CRLF_SUPPORT=0)
 add_compile_definitions(PICO_STDIO_DEFAULT_CRLF=0)
 
+add_compile_definitions(NO_SYS=0)
+
 # Add the standard library to the build
 target_link_libraries(fr_uros_diffdrive
     pico_stdlib
     FreeRTOS-Kernel
     FreeRTOS-Kernel-Heap4
     microros
+    pico_cyw43_arch_lwip_sys_freertos
 )
 
 # Add the standard include files to the build
@@ -75,6 +79,7 @@ target_include_directories(fr_uros_diffdrive PRIVATE
     ${CMAKE_CURRENT_LIST_DIR}/include/uros_wrapper
     ${CMAKE_CURRENT_LIST_DIR}/include/simple_publisher
     ${CMAKE_CURRENT_LIST_DIR}/include/simple_subscriber
+    ${CMAKE_CURRENT_LIST_DIR}/include/lwip
 )
 
 pico_add_extra_outputs(fr_uros_diffdrive)

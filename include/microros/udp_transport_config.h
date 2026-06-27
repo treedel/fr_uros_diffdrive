@@ -1,0 +1,10 @@
+#ifndef TRANSPORT_CONFIG_H
+#define TRANSPORT_CONFIG_H
+
+#define WIFI_SSID "D108-4G"
+#define WIFI_PASSWORD "9533112237"
+
+#define ROS_AGENT_UDP_PORT  (8888)
+#define ROS_AGENT_IP_ADDR   "192.168.1.21"
+
+#endif

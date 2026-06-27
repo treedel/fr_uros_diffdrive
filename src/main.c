@@ -8,15 +8,14 @@
 
 void vUrosBootTask(void* pvParameters)
 {
-    StatusLed_t* pxStatusLed = pxStatusLedInit(PICO_DEFAULT_LED_PIN);
+    StatusLed_t* pxStatusLed = pxStatusLedInit(0);
     UrosWrapperCore_t* xUrosWrapper = vUrosInit("Diffbot", pxStatusLed);
 
     vSimpleSubcriberInit(pxStatusLed);
-    vStartSimplePublisher(xUrosWrapper, "counter1", 100);
-    vStartSimplePublisher(xUrosWrapper, "counter2", 100);
-    vStartSimplePublisher(xUrosWrapper, "counter3", 100);
-    vStartSimplePublisher(xUrosWrapper, "counter4", 100);
-    vStartSimplePublisher(xUrosWrapper, "counter5", 100);
+    vStartSimplePublisher(xUrosWrapper, "wheel_odom", 50, pdTRUE);    // Odom
+    vStartSimplePublisher(xUrosWrapper, "joint_states", 50, pdFALSE);    // Joint states
+    vStartSimplePublisher(xUrosWrapper, "imu_raw", 10, pdFALSE);   // IMU
+    vStartSimplePublisher(xUrosWrapper, "lidar", 50, pdFALSE);   // Lidar (close)
 
     vSimpleSubscriberStart(xUrosWrapper);
     vUrosSetup(xUrosWrapper);

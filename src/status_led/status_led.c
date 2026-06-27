@@ -3,14 +3,16 @@
 
 void prvStatusLedGpioInit(unsigned long ulLedPin)
 {
-    gpio_init(ulLedPin);
-    gpio_set_dir(ulLedPin, GPIO_OUT);
-    gpio_put(ulLedPin, 0);
+    // gpio_init(ulLedPin);
+    // gpio_set_dir(ulLedPin, GPIO_OUT);
+    // gpio_put(ulLedPin, 0);
 }
 
 void prvStatusLedGpioSet(unsigned long ulLedPin, BaseType_t xLedState)
 {
-    gpio_put(ulLedPin, xLedState);
+    // gpio_put(ulLedPin, xLedState);
+    cyw43_arch_gpio_put(CYW43_WL_GPIO_LED_PIN, xLedState);
+
 }
 
 

@@ -11,6 +11,6 @@ typedef struct SimplePublisher_t {
 } SimplePublisher_t;
 
 void vPublisherTask(void* pvParameters);
-void vStartSimplePublisher(UrosWrapperCore_t* pxUrosWrapper, char* pcTopicName, unsigned long ulDelayPeriod);
+void vStartSimplePublisher(UrosWrapperCore_t* pxUrosWrapper, char* pcTopicName, unsigned long ulDelayPeriod, BaseType_t xReliable);
 
 #endif

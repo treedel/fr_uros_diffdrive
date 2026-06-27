@@ -15,17 +15,34 @@ bool prvUrosInitTransport()
 {
 
     return rmw_uros_set_custom_transport(
-		true,
-		NULL,
-		pico_serial_transport_open,
-		pico_serial_transport_close,
-		pico_serial_transport_write,
-		pico_serial_transport_read
-	) == RMW_RET_OK;
+        false,          // must be false for UDP
+        &picow_params,
+        picow_udp_transport_open,
+        picow_udp_transport_close,
+        picow_udp_transport_write,
+        picow_udp_transport_read
+    ) == RMW_RET_OK;
 }
 
 UrosWrapperCore_t* vUrosInit(char* pcNodeName, StatusLed_t* pxStatusLed)
 {
+    printf("Initializing wifi\n");
+    if (cyw43_arch_init()) {
+        printf("failed to initialise\n");
+        vTaskDelete(NULL);
+    }
+
+    printf("Switching to Station mode\n");
+    cyw43_arch_enable_sta_mode();
+
+    printf("Connecting to WiFi...\n");
+    if (cyw43_arch_wifi_connect_timeout_ms(WIFI_SSID, WIFI_PASSWORD, CYW43_AUTH_WPA2_AES_PSK, 30000)) {
+        printf("failed to connect.\n");
+        vTaskDelete(NULL);
+    } else {
+        printf("Connected.\n");
+    }
+    
     UrosWrapperCore_t* pxUrosWrapper = pvPortMalloc(sizeof(UrosWrapperCore_t));
     configASSERT(pxUrosWrapper != NULL);
     configASSERT(pxStatusLed != NULL);
@@ -116,18 +133,31 @@ void vUrosWrapperStart(UrosWrapperCore_t* pxUrosWrapper)
 UrosWrapperPublisher_t* vUrosWrapperAddPublisher(
     UrosWrapperCore_t* pxUrosWrapper,
     char* pcTopicName, 
-    const rosidl_message_type_support_t* pxTypeSupport
+    const rosidl_message_type_support_t* pxTypeSupport,
+    BaseType_t xReliable
 )
 {
     configASSERT(pxUrosWrapper != NULL);
     configASSERT(pxUrosWrapper->n_publishers < MAX_PUBLISHERS);
 
-    rclc_publisher_init_default(
-        &(pxUrosWrapper->xPublishers[pxUrosWrapper->n_publishers]),
-        &(pxUrosWrapper->xNode),
-        pxTypeSupport,
-        pcTopicName
-    );
+    if (xReliable)
+    {
+        rclc_publisher_init_default(
+            &(pxUrosWrapper->xPublishers[pxUrosWrapper->n_publishers]),
+            &(pxUrosWrapper->xNode),
+            pxTypeSupport,
+            pcTopicName
+        );
+    }
+    else
+    {
+        rclc_publisher_init_best_effort(
+            &(pxUrosWrapper->xPublishers[pxUrosWrapper->n_publishers]),
+            &(pxUrosWrapper->xNode),
+            pxTypeSupport,
+            pcTopicName
+        );
+    }
 
     (pxUrosWrapper->n_publishers)++;
 

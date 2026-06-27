@@ -10,16 +10,18 @@
 #include <rclc/executor.h>
 #include <rmw_microros/rmw_microros.h>
 
-#include "pico_uart_transports.h"
+//#include "pico_uart_transports.h"
+#include "picow_udp_transports.h"
 
 #include "FreeRTOS.h"
 #include "semphr.h"
 
+#include "udp_transport_config.h"
 #include "status_led.h"
 
 
-#define MAX_PUBLISHERS 10
-#define MAX_SUBSCRIBERS 10
+#define MAX_PUBLISHERS 5
+#define MAX_SUBSCRIBERS 5
 #define MAX_NODE_LENGTH 10
 #define STATUS_LED_PIN PICO_DEFAULT_LED_PIN
 
@@ -78,7 +80,8 @@ void vUrosWrapperStart(UrosWrapperCore_t* pxUrosWrapper);
 UrosWrapperPublisher_t* vUrosWrapperAddPublisher(
     UrosWrapperCore_t* pxUrosWrapper,
     char* pcTopicName, 
-    const rosidl_message_type_support_t* pxTypeSupport
+    const rosidl_message_type_support_t* pxTypeSupport,
+    BaseType_t xReliable
 );
 rcl_ret_t pxUrosWrapperPublish(
     UrosWrapperPublisher_t* pxUrosWrapperPublisher,
