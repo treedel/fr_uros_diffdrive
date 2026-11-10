@@ -1,0 +1,4 @@
+add_subdirectory(cli)
+add_subdirectory(logger)
+add_subdirectory(uros_wrapper)
+add_subdirectory(stub_publishers)

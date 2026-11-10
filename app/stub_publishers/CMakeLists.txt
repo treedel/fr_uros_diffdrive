@@ -1,0 +1,11 @@
+target_include_directories(${PROJECT_TITLE} PRIVATE
+    ${CMAKE_CURRENT_LIST_DIR}/include
+)
+
+file(GLOB C_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_LIST_DIR}/src/*.c")
+file(GLOB CPP_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_LIST_DIR}/src/*.cpp")
+target_sources(${PROJECT_TITLE} PRIVATE
+    ${C_SOURCES}
+    ${CPP_SOURCES}
+    ${FREERTOS_PATH}/FreeRTOS-Plus/Source/FreeRTOS-Plus-CLI/FreeRTOS_CLI.c
+)
